@@ -1,0 +1,206 @@
+
+itr_religion_missions_pr = {		#Protestant/Reformed Missions #to BigBoss:This mission slot never triggers. Main problem. Ignore the missions I haven't finished yet.
+	slot = 1
+	generic = no
+	ai = yes
+	
+	potential = {
+		tag = ITR
+		has_country_flag = religion_reformed_pr
+		NOT = { map_setup = map_setup_random }
+	}
+	has_country_shield = yes
+	
+	itr_religion_mission_pr1 = {		#Reformation
+		icon = protestants
+		required_missions = { }
+		position = 7
+		trigger = {
+			OR = {
+				NOT = { religious_unity = 0.50 }
+				stability = 3
+			}
+		}
+		effect = {
+			define_advisor = {
+				type = inquisitor
+				skill = 3
+				culture = saxon
+				discount = yes
+				religion = ROOT
+			}
+		}
+	}
+	itr_religion_mission_pr2 = {		#Reformation in the HRE
+		icon = italian_heretics
+		required_missions = { itr_religion_mission_pr1 }
+		position = 8
+		provinces_to_highlight = {
+				capital_scope = {
+					region = italy_region
+				}
+		}
+		trigger = {
+			every_country = {
+					limit = {
+						has_friendly_reformation_center = yes
+					}
+				has_opinion = {
+						who = ROOT
+						value = 120
+				}
+			}
+			calc_true_if = {
+				all_elector = {
+					has_opinion = {
+						who = ROOT
+						value = 200
+					}
+				}
+				amount = 3
+			}
+		}
+		effect = {
+			every_country = {
+					limit = {
+						religion = ROOT
+					}
+				add_country_modifier = {
+					name = "ink_102"
+					duration = -1
+				}
+			}
+			every_elector = { 
+				limit = { 
+					has_opinion = {
+						who = ROOT
+						value = 200
+					}
+				}
+				change_religion = ROOT
+			}
+			every_elector = { 
+				limit = {
+					religion = ROOT
+				}
+				add_country_modifier = {
+					name = "ink_102"
+					duration = -1
+				}
+			}		 
+		}
+	}
+	
+	itr_religion_mission_pr3 = {		#HRE religion
+		icon = protect_pope
+		required_missions = { itr_religion_mission_pr2 }
+		position = 9
+		trigger = {
+			OR = {
+				hre_religion = protestant
+				hre_religion = reformed
+			}
+			AND = {
+					NOT = { hre_size = 1 }
+					NOT = { exists = HLR }
+			}
+		}
+		effect = {
+			every_country = { 
+				limit = { 
+					AND = {
+						NOT = { total_development = 100 }
+						is_part_of_hre = yes
+					}
+				}
+				change_religion = ROOT
+			}
+		}
+	}
+	
+	itr_religion_mission_pr4 = {		#Reform Hegemon
+		icon = catholicsm
+		required_missions = {  }
+		position = 10
+		trigger = {
+			NOT = {
+				every_country = {
+					limit { religion = catholic }
+					total_development = 600
+				}
+				any_country {
+					limit { 
+						religion = catholic 
+					}
+					is_defender_of_faith = no
+				}
+			}
+		}
+		effect = {
+			add_treasury = 1
+		}
+	}
+	
+	itr_religion_mission_pr5 = {		#One Christian Sect
+		icon = crush_revolution
+		required_missions = { itr_religion_mission_pr4 }
+		position = 11
+		provinces_to_highlight = {
+			every_country = {
+					capital_scope = {
+							continent = europe
+					}
+					NOT = { religion = ROOT }	
+			}
+		}
+		trigger = {
+			if = {
+				limit = {
+					religion = protestant
+					
+				}
+				NOT = {
+					every_country = {
+						capital_scope = {
+							continent = europe
+						}
+						OR = {
+							religion = orthodox
+							religion = catholic
+							religion = reformed
+							religion = hussite
+							religion = coptic
+							religion = anglican
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = {
+					religion = reformed
+				}
+				NOT = {
+					every_country = {
+						capital_scope = {
+							continent = europe
+						}
+						OR = {
+							religion = orthodox
+							religion = catholic
+							religion = protestant
+							religion = hussite
+							religion = coptic
+							religion = anglican
+						}
+					}
+				}
+			}
+		}
+		effect = {
+			add_country_modifier = {
+				name = "ink_103"
+				duration = -1
+			}
+		}
+	}
+}
